@@ -1,8 +1,8 @@
 package kdtree;
 
-public abstract class PointI 
+public abstract class PointI
 {
-	protected int v[]; 
+	protected int v[];
 
 	public int get(int i) {
 		return v[i];

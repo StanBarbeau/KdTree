@@ -1,9 +1,12 @@
 package kdtree;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
 
 public class KdTree<Point extends PointI>
 {
+
 	/** A node in the KdTree
 	 */
 	public class KdNode 
@@ -61,13 +64,9 @@ public class KdTree<Point extends PointI>
 	 */
 	KdTree(int dim, ArrayList<Point> points, int max_depth) {
 		this.dim_ = dim;
-		this.n_points_ = points.size();
-		
-		//TODO: replace by a balanced initialization
 		this.n_points_=0;
-		for(Point p : points) {
-			insert(p);
-		}
+
+		this.medianeConstruct(points, 0);
 	
 	}
 	  
@@ -202,6 +201,32 @@ public class KdTree<Point extends PointI>
             return contains(node.child_left_, p);
         else
             return contains(node.child_right_, p);
+	}
+
+	private void medianeConstruct(List<Point> array, int dirDecoupe){
+		if (array.size() == 0) {
+			return;
+		} else if(array.size() == 1) {
+			this.insert(array.get(0));
+			return;
+		} else {
+
+			Comparator<Point> pointComparator = new Comparator<Point>() {
+				@Override
+				public int compare(Point o1, Point o2) {
+					return o2.get(dirDecoupe) - o1.get(dirDecoupe);
+				}
+
+			};
+			array.sort(pointComparator);
+
+			Point milieu = array.get(array.size()/2);
+			this.insert(milieu);
+
+			medianeConstruct( array.subList( 0, array.size() / 2 ), (dirDecoupe + 1)%this.dim_);
+			medianeConstruct( array.subList(array.size() / 2 + 1, array.size() ), (dirDecoupe + 1)%this.dim_);
+			return;
+		}
 	}
 	
 }
