@@ -71,7 +71,7 @@ public class KdTreeTest {
 		KdTree<Point2i> tree = new KdTree<Point2i>(2, v_tree_points,Integer.MAX_VALUE);
 		KdTree<Point2i> tree2 = new KdTree<>(2, arbre2, Integer.MAX_VALUE);
 
-		tree.insert(insPoint);
+		tree.insert(insPoint,0);
 
 		assertEquals("Les deux arbres sont différents",tree, tree2);
 	}
@@ -104,7 +104,8 @@ public class KdTreeTest {
         assertTrue("L'arbre n'est pas vide", arbre.nb_points() == 0);
         assertTrue("L'arbre n'est pas de dimension 1", arbre.dimension() == 1);
 
-        arbre.insert(rootPoint);
+        arbre.insert(rootPoint,0);
+		assertTrue("L'arbre ne contient pas qu'un point.", arbre.nb_points() == 1);
         assertTrue("Le point n'est pas compris dans l'arbre",arbre.contains(rootPoint));
         assertEquals("Le point ROOT n'est pas la racine de l'arbre.",rootPoint, arbre.getNN(rootPoint));
     }

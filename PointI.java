@@ -8,6 +8,10 @@ public abstract class PointI
 		return v[i];
 	}
 
+	protected void set(int t[]){
+        this.v = t;
+    }
+
 	public void add(PointI p) {
 		for(int i=0;i<v.length; ++i) {
 			v[i] += p.v[i];
@@ -37,7 +41,7 @@ public abstract class PointI
 	int[] cloneValues() {
 		return v.clone();		
 	}
-	
+
 	// this method should be static but that's not possible in Java...
 	public abstract PointI zero();
 }

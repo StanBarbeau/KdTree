@@ -1,5 +1,6 @@
 package kdtree;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
@@ -21,11 +22,13 @@ public class Main
             int imgHeight = img.getHeight();
             int imgWidth  = img.getWidth();
             BufferedImage res_img = new BufferedImage(imgWidth, imgHeight, img.getType());
-            BufferedImage id_img = new BufferedImage(imgWidth, imgHeight, img.getType());
 
 /////////////////////////////////////////////////////////////////
 //TODO: replace this naive image copy by the quantization
 /////////////////////////////////////////////////////////////////
+
+            ArrayList<Point3i> listCol = new ArrayList<Point3i>(imgHeight*imgWidth);
+
             for (int y = 0; y < imgHeight; y++) {
                 for (int x = 0; x < imgWidth; x++) {
                     int Color = img.getRGB(x,y);
@@ -33,17 +36,44 @@ public class Main
                     int G = (Color >> 8) & 0xff;
                     int B = Color & 0xff;
 
-                    int resR = R, resG = G, resB = B;
+                    listCol.add(new Point3i(R,G,B));
 
-                    int cRes = 0xff000000 | (resR << 16)
-                                          | (resG << 8)
-                                          | resB;
-                    res_img.setRGB(x,y,cRes);
                 }
             }
+
+            KdTree buildCol = new KdTree(3,listCol,4);
+
+            ArrayList<Point3i> finalListCol = new ArrayList<Point3i>(16);
+
+            buildCol.getPointsFromLeaf(finalListCol);
+
+            assert (finalListCol.size() == 16);
+
+            KdTree finalTreeCol = new KdTree(3,finalListCol,Integer.MAX_VALUE);
+
+            for (int y = 0; y < imgHeight; y++) {
+                for (int x = 0; x < imgWidth; x++) {
+
+                    int Color = img.getRGB(x,y);
+                    int R = (Color >> 16) & 0xff;
+                    int G = (Color >> 8) & 0xff;
+                    int B = Color & 0xff;
+
+                    PointI candidate = finalTreeCol.getNN(new Point3i(R,G,B));
+
+                    int resR = candidate.get(0), resG = candidate.get(1), resB = candidate.get(2);
+
+                    int cRes = 0xff000000 | (resR << 16)
+                            | (resG << 8)
+                            | resB;
+                    res_img.setRGB(x,y,cRes);
+
+                }
+            }
+
+
 /////////////////////////////////////////////////////////////////
 
-            ImageIO.write(id_img, "jpg", new File("ResId.jpg"));
             ImageIO.write(res_img, "jpg", new File("ResColor.jpg"));
 /////////////////////////////////////////////////////////////////
         } catch (IOException e) {
