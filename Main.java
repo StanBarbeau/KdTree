@@ -74,6 +74,7 @@ public class Main
 
 /////////////////////////////////////////////////////////////////
 
+            ImageIO.write(img, "jpg", new File("ResId.jpg"));
             ImageIO.write(res_img, "jpg", new File("ResColor.jpg"));
 /////////////////////////////////////////////////////////////////
         } catch (IOException e) {
